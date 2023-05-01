@@ -1,0 +1,111 @@
+# Lab2问题
+## git基本命令
+### 概念：
+1. **工作区**：本地电脑存放项目文件的地方，比如文件夹；  
+2. **暂存区（Index/Stage）**：在使用git管理项目文件的时候，其本地的项目文件会多出一个.git的文件夹，将这个.git文件夹称之为版本库。其中.git文件夹中包含了两个部分，一个是暂存区（Index或者Stage）,顾名思义就是暂时存放文件的地方，通常使用add命令将工作区的文件添加到暂存区里；  
+3. **本地仓库**：.git文件夹里还包括git自动创建的master分支，并且将HEAD指针指向master分支。使用commit命令可以将暂存区中的文件添加到本地仓库中；  
+4. **远程仓库**：不是在本地仓库中，项目代码在远程git服务器上，比如项目放在github上，就是一个远程仓库，通常使用clone命令将远程仓库拷贝到本地仓库中，开发后push到远程仓库中即可；
+
+### 配置信息：
+1.  列出当前配置：```git config --list```;   
+2. 列出repository配置：```git config --local --list```;   
+3. 列出全局配置：```git config --global --list```;   
+4. 列出系统配置：```git config --system --list```;  
+
+
+### 第一次使用git，配置用户信息
+1. 配置用户名：```git config --global user.name "your name"```;  
+2. 配置用户邮箱：```git config --global user.email $"youremail@github.com"```;
+
+### 新建仓库
+1. 将工作区中的项目文件使用git进行管理，即创建一个新的本地仓库：```git init```；  
+2. 从远程git仓库复制项目：```git clone <url>```，如：```git clone git://github.com/wasd/example.git```;  
+3. 克隆项目时如果想定义新的项目名，可以在clone命令后指定新的项目名：```git clone git://github.com/wasd/example.git mygit```；
+
+
+### 提交
+1. 提交工作区所有文件到暂存区：```git add .```
+2. 提交工作区中指定文件到暂存区：```git add <file1> <file2> ...```;
+3. 提交工作区中某个文件夹中所有文件到暂存区：``git add [dir]``;
+
+
+### 撤销
+1. 删除工作区文件，并且也从暂存区删除对应文件的记录：```git rm <file1> <file2>```;
+2. 从暂存区中删除文件，但是工作区依然还有该文件:```git rm --cached <file>```;
+3. <front color="red"> 取消暂存区已经暂存的文件：```git reset HEAD <file>...```;<front color="red">
+4. 撤销上一次对文件的操作：```git checkout --<file>```
+5. 查看当前所有的储藏：```git stash list```
+
+### 更新文件
+1. 重命名文件，并将已改名文件提交到暂存区：```git mv [file-original] [file-renamed]```
+
+### 查新信息
+1. 查询当前工作区所有文件的状态：```git status;```
+2. 比较工作区中当前文件和暂存区之间的差异，也就是修改之后还没有暂存的内容：```git diff```；
+指定文件在工作区和暂存区上差异比较：```git diff <file-name>```
+
+### 提交文件到版本库
+1. 暂存区中的文件提交到本地仓库中，即打上新版本：```git commit -m "commit_info"```;
+2. 将所有已经使用git管理过的文件暂存后一并提交，跳过add到暂存区的过程：```git commit -a -m "commit_info"```;
+3. 提交文件时，发现漏掉几个文件，或者注释写错了，可以撤销上一次提交：```git commit --amend```
+
+### 分支管理
+1. 创建分支：```git branch <branch-name>```
+2. 从当前所处的分支切换到其他分支：```git checkout <branch-name>```
+3. 新建并切换到新建分支上：```git checkout -b <branch-name>```;
+4. 删除分支：```git branch -d <branch-name>```；
+5. 将当前分支与指定分支进行合并：```git merge <branch-name>```;
+6. 显示本地仓库的所有分支：```git branch```;
+7. 从远程分支``checkout``出来的本地分支，称之为**跟踪分支**。在跟踪分支上向远程分支上推送内容：```git push```。该命令会自动判断应该向远程仓库中的哪个分支推送数据；在跟踪分支上合并远程分支：```git pull```；
+8. 查看提交历史：```git log```  
+    ```-p```：显示每个提交所引入的更改。    
+    ```git log -p -5```显示最近的 5 个提交  
+    ```--graph```:以图形方式显示提交历史  
+9. ```git show-branch  ```  
+    *：当前所在的分支。  
+    +：该分支包含当前分支的所有提交。  
+    -：该分支包含部分当前分支的提交。  
+    |：分支分叉点。  
+    =：该分支包含与当前分支相同的提交。  
+    <：该分支包含当前分支尚未包含的提交。  
+    $>$：当前分支包含该分支尚未包含的提交。  
+
+
+### 本地仓库上的操作
+1. 查看本地仓库关联的远程仓库：```git remote```；在克隆完每个远程仓库后，远程仓库默认为origin;加上-v的参数后，会显示远程仓库的url地址；
+2. 添加远程仓库，一般会取一个简短的别名：```git remote add [remote-name] [url]```，比如：```git remote add example git://github.com/example/example.git```;
+3. 从远程仓库中抓取本地仓库中没有的更新：```git fetch [remote-name]```，如```git fetch origi```n;使用fetch只是将远端数据拉到本地仓库，并不自动合并到当前工作分支，只能人工合并。如果设置了某个分支关联到远程仓库的某个分支的话，可以使用git pull来拉去远程分支的数据，然后将远端分支自动合并到本地仓库中的当前分支；
+4. 将本地仓库某分支推送到远程仓库上：```git push [remote-name] [branch-name]```，如```git push origin master```；如果想将本地分支推送到远程仓库的不同名分支：```git push <remote-name> <local-branch>:<remote-branch> ``` 
+5. 如果想删除远程分支：```git push [remote-name] :<remote-branch>```，如```git push origin :serverfix```。这里<front color="red">省略了本地分支，也就相当于将空白内容推送给远程分支，就等于删掉了远程分支<front color="red">。
+6. 移除远程仓库：```git remote rm [remote-name]```；
+
+## SVN基本命令
+1. 从SVN库中提取对应项目:```svn checkout svn://192.168.1.1/myproject/doc  /home/test/  --username myname --password password``` svn项目路径为``svn://192.168.1.1/myproject/doc``，将项目路径下的文件checkout到``/home/test``目录下，若没有``/home/test``路径会自动创建，同时只将doc中的子目录和文件checkout到该路径。
+2. 添加单个文件：```svn add file```
+3. 添加全部文件：```svn add *```
+4. 提交文件：```svn commit -m "message"```
+5. 删除文件：```svn delete file```   
+        <front color="red">``del`` ``rm`` 都可以<front color="red">
+6. 查看当前目录文件状态：```svn status```
+7.  ### 查看提交日志
+    (1). 查看所有记录:```svn log```  
+    (2). 查看最近的N条提交记录:```svn log -ln```  
+    (3). 查看file文件的记录:```svn log file```
+8. 查看file项目的svn信息：```svn info file```
+9.  查看目录下有什么文件：```svn list svn://..../..```
+10. ### 文件修改之后回退:
+    (1).撤销对file的修改:```svn revert file```  
+    (2). 撤销当前目录下的所有修改：```svn revert --recursive```
+11. ### 文件对比：
+    （1）查看文件与svn中的不同： ```svn diff file```  
+    （2）查看file在版本为12与14之间所做的修改：```svn diff -r 12:14 file```
+12. 将两个版本之间的差异合并到当前文件：```svn merge -r m:n path```
+13. 代码库URL变更：更新工作副本至不同的URL ```svn switch URL```
+14. 解决冲突：移除工作副本的目录或文件的“冲突”状态 ```svn resolved```   
+注意: 本子命令不会依语法来解决冲突或是移除冲突标记；它只是移除冲突的相关文件，然后让 file 可以再次提交。
+15. 拷贝工作副本的一个文件或目录到版本库：```svn copy (cp) file1 file2```
+16. 合并：将url合并到当前 ```svn merge URL``` 
+17. 
+
+
+
